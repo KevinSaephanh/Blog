@@ -6,8 +6,11 @@ const PostSchema = new Schema({
   title: {
     type: String,
     required: true,
+    min: 2,
+    max: 25,
+    trim: true,
   },
-  user: {
+  creator: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },

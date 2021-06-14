@@ -6,6 +6,9 @@ const SectionSchema = new Schema({
   title: {
     type: String,
     required: true,
+    min: 2,
+    max: 25,
+    trim: true,
   },
   picture: {
     type: String,
@@ -13,6 +16,7 @@ const SectionSchema = new Schema({
   body: {
     type: String,
     required: true,
+    trim: true,
   },
 });
 

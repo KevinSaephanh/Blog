@@ -22,11 +22,11 @@ connection.once("open", () =>
 );
 
 // Config routes
-const postsRouter = require("./api/routes/posts");
-const authRouter = require("./api/routes/auth");
+// const postsRouter = require("./routes/posts");
+const authRouter = require("./routes/auth");
 
 app.use("/auth", authRouter);
-app.use("/server/posts", postsRouter);
+// app.use("/posts", postsRouter);
 
 // Load the npm build package of the frontend
 if (process.env.NODE_ENV === "production") {
