@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Section = require("./Section");
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
@@ -10,16 +9,16 @@ const PostSchema = new Schema({
     max: 25,
     trim: true,
   },
-  creator: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
   thumbnail: {
     type: String,
+  },
+  description: {
+    type: String,
+    required: true,
   },
   categories: [
     {
@@ -29,8 +28,8 @@ const PostSchema = new Schema({
   ],
   sections: [
     {
-      type: Section,
-      required: true,
+      type: Schema.Types.ObjectId,
+      ref: "Section",
     },
   ],
 });

@@ -30,6 +30,12 @@ const UserSchema = new Schema({
     default:
       "https://res.cloudinary.com/geekysrm/image/upload/v1542221619/default-user.png",
   },
+  posts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+    },
+  ],
 });
 
 module.exports = User = mongoose.model("User", UserSchema);
