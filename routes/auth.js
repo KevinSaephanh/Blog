@@ -2,8 +2,9 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const authenticate = require("../middleware/authentication");
 
-router.get("/user-posts/:username", (req, res, next) => {
+router.get("/user-posts/:username", authenticate, (req, res, next) => {
   const { username } = req.params;
   User.findOne({ username })
     .then((user) => {
@@ -30,7 +31,7 @@ router.post("/register", (req, res, next) => {
 
     User.findOne({ email })
       .then((user1) => {
-        //   Return 401 if existing user is found
+        // Return 401 if existing user is found
         if (user1) {
           return res.status(401).json({
             message: "User already exists",
@@ -40,8 +41,8 @@ router.post("/register", (req, res, next) => {
         // Save new user
         user.save().then((result) => {
           if (!result) {
-            return res.status(500).json({
-              message: "Error Creating USer",
+            return res.status(400).json({
+              message: "Error creating user",
             });
           }
 
