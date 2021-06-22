@@ -5,6 +5,7 @@ const PostSchema = new Schema({
   title: {
     type: String,
     required: true,
+    unique: true,
     min: 2,
     max: 25,
     trim: true,
@@ -14,7 +15,8 @@ const PostSchema = new Schema({
     default: Date.now,
   },
   thumbnail: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Photo",
   },
   description: {
     type: String,

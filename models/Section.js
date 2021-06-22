@@ -5,19 +5,21 @@ const Schema = mongoose.Schema;
 const SectionSchema = new Schema({
   title: {
     type: String,
-    required: true,
     min: 2,
     max: 25,
     trim: true,
   },
   picture: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Picture",
   },
-  body: {
-    type: String,
-    required: true,
-    trim: true,
-  },
+  paragraphs: [
+    {
+      type: String,
+      required: true,
+      min: 1,
+    },
+  ],
 });
 
 module.exports = Section = mongoose.model("Section", SectionSchema);

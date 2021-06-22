@@ -2,7 +2,7 @@ const router = require("express").Router();
 const Post = require("../models/Post");
 const authenticate = require("../middleware/authentication");
 
-router.post("", authenticate, (req, res, next) => {
+router.post("", (req, res, next) => {
   const post = new Post(req.body.post);
   post
     .save()
