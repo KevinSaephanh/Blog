@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Category = require("../models/Category");
 
-router.get("", (req, res, next) => {
+router.get("", (req, res) => {
   Category.find()
     .then((categories) => {
       res.status(200).json({
@@ -14,7 +14,7 @@ router.get("", (req, res, next) => {
     });
 });
 
-router.post("", (req, res, next) => {
+router.post("", (req, res) => {
   const category = new Category({
     title: req.body.title,
   });

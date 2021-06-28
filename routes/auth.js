@@ -2,25 +2,8 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
-const authenticate = require("../middleware/authentication");
 
-router.get("/user-posts/:username", authenticate, (req, res, next) => {
-  const { username } = req.params;
-  User.findOne({ username })
-    .then((user) => {
-      res.status(200).json({
-        message: "User posts retrieved!",
-        posts: user.posts,
-      });
-    })
-    .catch((err) => {
-      res.status(400).json({
-        error: err,
-      });
-    });
-});
-
-router.post("/register", (req, res, next) => {
+router.post("/register", (req, res) => {
   const { username, email, password } = req.body;
   bcrypt.hash(password, 10).then((hash) => {
     const user = new User({
@@ -60,7 +43,7 @@ router.post("/register", (req, res, next) => {
   });
 });
 
-router.post("/login", (req, res, next) => {
+router.post("/login", (req, res) => {
   const { username, password } = req.body;
   let user;
 
