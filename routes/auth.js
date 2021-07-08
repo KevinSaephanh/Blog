@@ -3,87 +3,62 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
-router.post("/register", (req, res) => {
-  const { username, email, password } = req.body;
-  bcrypt.hash(password, 10).then((hash) => {
+router.post("/register", async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    // Hash password for user
+    const hash = await bcrypt.hash(password, 10);
     const user = new User({
       username,
       email,
       password: hash,
     });
 
-    User.findOne({ email })
-      .then((user1) => {
-        // Return 401 if existing user is found
-        if (user1) {
-          return res.status(401).json({
-            message: "User already exists",
-          });
-        }
-
-        // Save new user
-        user.save().then((result) => {
-          if (!result) {
-            return res.status(400).json({
-              message: "Error creating user",
-            });
-          }
-
-          res.status(201).json({
-            message: "User created!",
-            result: result,
-          });
-        });
-      })
-      .catch((err) => {
-        res.status(500).json({
-          error: err,
-        });
+    // Check if user already exists
+    const userFound = await User.findOne({ email, username });
+    if (userFound) {
+      return res.status(401).json({
+        message: "User already exists",
       });
-  });
+    }
+
+    // Save new user
+    const result = user.save();
+    res.status(201).json({
+      message: "User created!",
+      result,
+    });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 });
 
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  let user;
 
-  User.findOne({ username })
-    .then((foundUser) => {
-      // Return 401 if user is not found
-      if (!foundUser) {
-        return res.status(401).json({
-          message: "Auth failed no such user",
-        });
-      }
-      user = foundUser;
-      return bcrypt.compare(password, user.password);
-    })
-    .then((result) => {
-      // Return 401 if passwords do not match
-      if (!result) {
-        return res.status(401).json({
-          message: "Auth failed incorect password",
-        });
-      }
+  try {
+    const foundUser = await User.findOne({ username });
+    const user = foundUser;
+    await bcrypt.compare(password, user.password);
 
-      // Create and sign token
-      const token = jwt.sign(
-        {
-          username: user.username,
-          photo: user.photo,
-          userId: user._id,
-        },
-        process.env.TOKEN_SECRET,
-        { expiresIn: "1h" }
-      );
-      res.status(200).json({
-        token: token,
-        expiresIn: 3600,
-      });
-    })
-    .catch((e) => {
-      console.log(e);
+    // Create and sign token
+    const token = jwt.sign(
+      {
+        username: user.username,
+        photo: user.photo,
+        userId: user._id,
+      },
+      process.env.TOKEN_SECRET,
+      { expiresIn: "1h" }
+    );
+    res.status(200).json({
+      token: token,
+      expiresIn: 3600,
     });
+  } catch (error) {
+    res.status(401).json({ error });
+  }
 });
 
 module.exports = router;
